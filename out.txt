@@ -1,0 +1,1 @@
+{"statusCode":200,"body":"\"Welcome from Lambda CI/CD 🚀\""}

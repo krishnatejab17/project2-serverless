@@ -1,6 +1,11 @@
 exports.handler = async () => {
   return {
     statusCode: 200,
-    body: JSON.stringify("Welcome from Lambda CI/CD 🚀")
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      message: "Welcome from Lambda CI/CD 🚀"
+    })
   };
 };
