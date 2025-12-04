@@ -1,0 +1,41 @@
+name: Deploy Lambda
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_REGION: us-east-1
+  S3_BUCKET: serverless-lambda-deploy-bucket-12345
+  S3_KEY: lambda.zip
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Zip Lambda
+        run: |
+          cd lambda
+          zip -r ../lambda.zip .
+
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::828411126532:role/github-actions-oidc-role
+          aws-region: us-east-1
+
+      - name: Upload to S3
+        run: |
+          aws s3 cp lambda.zip s3://$S3_BUCKET/$S3_KEY
+
+      - name: Update Lambda
+        run: |
+          aws lambda update-function-code \
+            --function-name hello-lambda-cicd \
+            --s3-bucket $S3_BUCKET \
+            --s3-key $S3_KEY
